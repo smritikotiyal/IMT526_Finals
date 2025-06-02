@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Complaint - Citibank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .logo {
+            max-height: 50px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="text-center">
+            <img src="https://www.citi.com/citi-graphics/microsite/citientertainment-sale/images/citi-entertainment-logo.svg" alt="Citibank Logo" class="logo">
+            <h1 class="mb-4">Submit a Complaint</h1>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form action="{{ url_for('submit_complaint') }}" method="post">
+            <div class="mb-3">
+                <label for="product" class="form-label">Product</label>
+                <select class="form-select" id="product" name="product" required>
+                    <option value="">Select a product</option>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="Bank Account">Bank Account</option>
+                    <option value="Mortgage">Mortgage</option>
+                    <option value="Personal Loan">Personal Loan</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="sub_product" class="form-label">Sub-product</label>
+                <select class="form-select" id="sub_product" name="sub_product" required>
+                    <option value="">Select a sub-product</option>
+                    <option value="General">General</option>
+                    <option value="Rewards">Rewards</option>
+                    <option value="Interest Rates">Interest Rates</option>
+                    <option value="Fees">Fees</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="issue" class="form-label">Issue</label>
+                <select class="form-select" id="issue" name="issue" required>
+                    <option value="">Select an issue</option>
+                    <option value="Billing">Billing</option>
+                    <option value="Customer Service">Customer Service</option>
+                    <option value="Account Access">Account Access</option>
+                    <option value="Fraud">Fraud</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="sub_issue" class="form-label">Sub-issue</label>
+                <select class="form-select" id="sub_issue" name="sub_issue" required>
+                    <option value="">Select a sub-issue</option>
+                    <option value="General">General</option>
+                    <option value="Late Fees">Late Fees</option>
+                    <option value="Unauthorized Charges">Unauthorized Charges</option>
+                    <option value="Account Closure">Account Closure</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="complaint_narrative" class="form-label">Complaint Details</label>
+                <textarea class="form-control" id="complaint_narrative" name="complaint_narrative" rows="5" required 
+                          placeholder="Please provide details about your complaint..."></textarea>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">Submit Complaint</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

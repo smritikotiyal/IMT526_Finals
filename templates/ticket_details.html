@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ticket Details - Citibank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .logo {
+            max-height: 50px;
+            margin: 20px 0;
+        }
+        .status-Open { 
+            color: #fd7e14;
+            font-weight: 600;
+        }
+        .status-Assessed { 
+            color: #0d6efd;
+            font-weight: 600;
+        }
+        .status-Closed { 
+            color: #198754;
+            font-weight: 600;
+        }
+        .ticket-header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .narrative-box {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #0d6efd;
+        }
+        .model-card {
+            height: 100%;
+            transition: all 0.3s;
+        }
+        .model-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .confidence-high {
+            color: #198754;
+            font-weight: bold;
+        }
+        .confidence-medium {
+            color: #fd7e14;
+            font-weight: bold;
+        }
+        .confidence-low {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .assess-button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="text-center mb-4">
+            <img src="https://www.citi.com/citi-graphics/microsite/citientertainment-sale/images/citi-entertainment-logo.svg" alt="Citibank Logo" class="logo">
+        </div>
+
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item active">Ticket {{ ticket.ticket_id[:8] }}...</li>
+            </ol>
+        </nav>
+
+        <div class="ticket-header">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3><i class="fas fa-ticket-alt me-2"></i>Ticket Details</h3>
+                    <p class="text-muted mb-0">ID: {{ ticket.ticket_id }}</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-1">
+                        <strong>Status:</strong>
+                        <span class="status-{{ ticket.status }} ms-2">
+                            {% if ticket.status == 'Open' %}
+                                <i class="fas fa-exclamation-circle"></i>
+                            {% elif ticket.status == 'Assessed' %}
+                                <i class="fas fa-clock"></i>
+                            {% else %}
+                                <i class="fas fa-check-circle"></i>
+                            {% endif %}
+                            {{ ticket.status }}
+                        </span>
+                    </p>
+                    <p class="mb-0">
+                        <strong>Created:</strong>
+                        <span class="ms-2">{{ ticket.created_timestamp }}</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h5><i class="fas fa-info-circle me-2"></i>Product Information</h5>
+                <table class="table">
+                    <tr>
+                        <th width="30%">Product:</th>
+                        <td>{{ ticket.product }}</td>
+                    </tr>
+                    <tr>
+                        <th>Sub-product:</th>
+                        <td>{{ ticket.sub_product }}</td>
+                    </tr>
+                    <tr>
+                        <th>Issue:</th>
+                        <td>{{ ticket.issue }}</td>
+                    </tr>
+                    <tr>
+                        <th>Sub-issue:</th>
+                        <td>{{ ticket.sub_issue }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h5><i class="fas fa-comment-alt me-2"></i>Complaint Narrative</h5>
+                <div class="narrative-box">
+                    {{ ticket.complaint_narrative }}
+                </div>
+            </div>
+        </div>
+
+        {% if ticket.status == 'Open' %}
+        <div class="text-center">
+            <form action="{{ url_for('assess_ticket', ticket_id=ticket.ticket_id) }}" method="post">
+                <button type="submit" class="btn btn-primary assess-button">
+                    <i class="fas fa-robot me-2"></i>Assess Complaint
+                </button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if ticket.status == 'Assessed' %}
+        <h4 class="mb-4"><i class="fas fa-chart-bar me-2"></i>Model Assessments</h4>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card model-card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-brain me-2"></i>DistilBERT Model</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Prediction:</strong> {{ ticket.distilbert_prediction }}</p>
+                        <p class="mb-0">
+                            <strong>Confidence:</strong>
+                            <span class="{{ 'confidence-high' if ticket.distilbert_confidence|float > 0.8 
+                                        else 'confidence-medium' if ticket.distilbert_confidence|float > 0.6 
+                                        else 'confidence-low' }}">
+                                {{ ticket.distilbert_confidence }}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card model-card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Enhanced DistilBERT</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Prediction:</strong> {{ ticket.enhanced_prediction }}</p>
+                        <p><strong>Confidence:</strong>
+                            <span class="{{ 'confidence-high' if ticket.enhanced_confidence|float > 0.8 
+                                        else 'confidence-medium' if ticket.enhanced_confidence|float > 0.6 
+                                        else 'confidence-low' }}">
+                                {{ ticket.enhanced_confidence }}
+                            </span>
+                        </p>
+                        {% if ticket.enhanced_reasoning %}
+                        <p class="mb-0">
+                            <strong>Reasoning:</strong><br>
+                            {{ ticket.enhanced_reasoning }}
+                        </p>
+                        <p><strong>Sources:</strong></p>
+                        <div class="narrative-box">
+                            {{ ticket.sources }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header bg-dark text-white">
+                <h4 class="mb-0"><i class="fas fa-gavel me-2"></i>Final Decision</h4>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('resolve_ticket', ticket_id=ticket.ticket_id) }}" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Choose Action</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="action" value="accept" id="accept" required>
+                            <label class="form-check-label" for="accept">
+                                Accept Model Recommendation
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="action" value="reject" id="reject">
+                            <label class="form-check-label" for="reject">
+                                Provide Custom Decision
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="customDecisionFields" style="display: none;">
+                        <div class="mb-3">
+                            <label for="decision" class="form-label">Your Decision</label>
+                            <select class="form-select" id="decision" name="decision">
+                                <option value="Monetary Relief">Monetary Relief</option>
+                                <option value="Non-monetary Relief">Non-monetary Relief</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="reasoning" class="form-label">Your Reasoning</label>
+                            <textarea class="form-control" id="reasoning" name="reasoning" rows="3"></textarea>
+                            <textarea class="form-control" id="sources" name="Source" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check-circle me-2"></i>Submit Decision
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if ticket.status == 'Closed' %}
+        <div class="card mt-4">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="fas fa-check-circle me-2"></i>Resolution Details</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Final Decision:</strong> {{ ticket.final_decision }}</p>
+                {% if ticket.employee_reasoning %}
+                <p><strong>Reasoning:</strong></p>
+                <div class="narrative-box">
+                    {{ ticket.employee_reasoning }}
+                </div>
+            
+                {% endif %}
+                <p class="mb-0"><strong>Closed:</strong> {{ ticket.closed_timestamp }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Show/hide custom decision fields based on radio selection
+        document.querySelectorAll('input[name="action"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('customDecisionFields').style.display = 
+                    this.value === 'reject' ? 'block' : 'none';
+                
+                // Toggle required attribute on fields
+                const decisionField = document.getElementById('decision');
+                const reasoningField = document.getElementById('reasoning');
+                decisionField.required = this.value === 'reject';
+                reasoningField.required = this.value === 'reject';
+            });
+        });
+    </script>
+</body>
+</html> 
