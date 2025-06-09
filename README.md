@@ -6,7 +6,7 @@ This project implements a business-aligned Decision Support System (DSS) designe
 
 ## System Architecture
 
-![System Architecture](./7942ABEB-2A7C-4AC4-AEB2-02AC17CC3F85.png)
+![System Architecture](./Arc.png)
 
 ---
 
@@ -14,7 +14,7 @@ This project implements a business-aligned Decision Support System (DSS) designe
 
 A working prototype of the complaint handling workflow, built using Flask.
 
-![Web App Demo](./A5E1FEDE-AD9B-4446-B90A-3A12DE525CFA.png)
+![Web App Demo](./WebApp.png)
 
 ---
 
