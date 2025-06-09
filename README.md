@@ -53,13 +53,9 @@ Or set it directly in code.
 
 ---
 
----
-
 ## Baseline Models
-
-Watch a full walkthrough here:  
-```run Baseline_Model.ipynb on JN
-```
+ 
+- run `Baseline_Model.ipynb` on JN for baseline models
 ---
 
 ## Run the Web Dashboard
