@@ -122,8 +122,7 @@ class RAGComplaintClassifier:
         self,
         policy_dir: str,
         model_path: str = './training_results/run_20250530_174716/model',
-        llm_api_key: Optional[str] = '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',
-        # llm_api_key: Optional[str] = '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',
+        llm_api_key: Optional[str] = '',
         llm_provider: str = 'openai',
         max_policy_chars: int = 1000  # Maximum characters per policy
     ):
