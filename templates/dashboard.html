@@ -16,8 +16,12 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
         .logo {
-            max-height: 50px;
+            max-height: 80px;
             margin: 20px 0;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
         }
         .table {
             margin-top: 20px;
@@ -33,6 +37,24 @@
         .status-Closed { 
             color: #198754;
             font-weight: 600;
+        }
+        .sla-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        .sla-overdue {
+            background-color: #dc3545;
+            color: white;
+        }
+        .sla-warning {
+            background-color: #ffc107;
+            color: #000;
+        }
+        .sla-ontrack {
+            background-color: #198754;
+            color: white;
         }
         .btn-view {
             background-color: #0d6efd;
@@ -67,8 +89,8 @@
 </head>
 <body>
     <div class="container">
-        <div class="text-center mb-4">
-            <img src="https://www.citi.com/citi-graphics/microsite/citientertainment-sale/images/citi-entertainment-logo.svg" alt="Citibank Logo" class="logo">
+        <div class="header">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Company Logo" class="logo">
         </div>
         
         <div class="dashboard-header">
@@ -85,6 +107,7 @@
                         <th>Ticket ID</th>
                         <th>Created</th>
                         <th>Status</th>
+                        <th>SLA Status</th>
                         <th>Product</th>
                         <th>Issue</th>
                         <th>Actions</th>
@@ -106,6 +129,25 @@
                                 {% endif %}
                                 {{ ticket.status }}
                             </span>
+                        </td>
+                        <td>
+                            {% if ticket.status != 'Closed' %}
+                                <span class="sla-status {{ 'sla-overdue' if ticket.sla_status == 'Overdue' 
+                                                    else 'sla-warning' if ticket.sla_status == 'Warning'
+                                                    else 'sla-ontrack' }}">
+                                    {% if ticket.sla_status == 'Overdue' %}
+                                        <i class="fas fa-exclamation-triangle me-1"></i>Overdue
+                                    {% elif ticket.sla_status == 'Warning' %}
+                                        <i class="fas fa-clock me-1"></i>{{ ticket.days_pending|int }} days
+                                    {% else %}
+                                        <i class="fas fa-check me-1"></i>{{ ticket.days_pending|int }} days
+                                    {% endif %}
+                                </span>
+                            {% else %}
+                                <span class="text-muted">
+                                    <i class="fas fa-check-circle me-1"></i>Completed
+                                </span>
+                            {% endif %}
                         </td>
                         <td>{{ ticket.product }} - {{ ticket.sub_product }}</td>
                         <td>{{ ticket.issue }} - {{ ticket.sub_issue }}</td>

@@ -18,15 +18,19 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
         .logo {
-            max-height: 50px;
+            max-height: 80px;
             margin: 20px 0;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="text-center">
-            <img src="https://www.citi.com/citi-graphics/microsite/citientertainment-sale/images/citi-entertainment-logo.svg" alt="Citibank Logo" class="logo">
+        <div class="header">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Company Logo" class="logo">
             <h1 class="mb-4">Submit a Complaint</h1>
         </div>
 

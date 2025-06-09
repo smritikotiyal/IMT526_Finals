@@ -38,7 +38,7 @@ def get_tickets():
                                    'distilbert_confidence', 'enhanced_prediction',
                                    'enhanced_confidence', 'enhanced_reasoning',
                                    'final_decision', 'employee_reasoning',
-                                   'closed_timestamp', 'sla_status'])
+                                   'closed_timestamp', 'sla_status', 'sources'])
     return pd.read_csv(TICKETS_FILE)
 
 def update_sla_status():
@@ -141,9 +141,12 @@ def assess_ticket(ticket_id):
         print(f"\nAnswer: {result['answer']}")
         print("\nSources:")'''
         tickets.at[ticket_idx, 'enhanced_reasoning'] = result['answer']
+        tickets.at[ticket_idx, 'sources'] = ""
+        # tickets.at[ticket_idx, 'sources'] = result['source_documents']
+       # print('result[source_documents] : ', result['source_documents'])
         for doc in result['source_documents']:
-            tickets.at[ticket_idx, 'sources'] += f"- {doc.metadata['source']}, page {doc.metadata['page']}\n"
             print(f"- {doc.metadata['source']}, page {doc.metadata['page']}")
+            tickets.at[ticket_idx, 'sources'] += f"- {doc.metadata['source']}, page {doc.metadata['page']}\n"
             print('tickets.at[ticket_idx, sources] : ', tickets.at[ticket_idx, 'sources'])
     except Exception as e:
         print(f"Error: {str(e)}") 
