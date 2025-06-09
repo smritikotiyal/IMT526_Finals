@@ -6,7 +6,7 @@ This project implements a business-aligned Decision Support System (DSS) designe
 
 ## System Architecture
 
-![System Architecture](./Arc.png)
+![System Architecture](./Arch.png)
 
 ---
 
